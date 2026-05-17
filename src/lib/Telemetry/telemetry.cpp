@@ -171,7 +171,8 @@ bool Telemetry::RXhandleUARTin(uint8_t data)
 
             break;
         case RECEIVING_LENGTH:
-            if (data >= CRSF_MAX_PACKET_LEN)
+            if (data < (CRSF_MIN_PACKET_LEN - CRSF_FRAME_NOT_COUNTED_BYTES) ||
+                data > (CRSF_MAX_PACKET_LEN - CRSF_FRAME_NOT_COUNTED_BYTES))
             {
                 telemetry_state = TELEMETRY_IDLE;
                 return false;
@@ -279,7 +280,7 @@ void Telemetry::AppendTelemetryPackage(uint8_t *package)
             }
 #endif
 #if defined(HAS_MSP_VTX)
-            else if (header->type == CRSF_FRAMETYPE_MSP_RESP)
+            if (header->type == CRSF_FRAMETYPE_MSP_RESP)
             {
                 mspVtxProcessPacket(package);
             }

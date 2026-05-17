@@ -26,7 +26,13 @@ const fhss_config_t domains[] = {
 
 #if defined(RADIO_LR1121)
 const fhss_config_t domainsDualBand[] = {
-    {"ISM2G4", FREQ_HZ_TO_REG_VAL(2400400000), FREQ_HZ_TO_REG_VAL(2479400000), 80, 2440000000}
+    {
+    #if defined(Regulatory_Domain_EU_CE_2400)
+        "CE_LBT",
+    #else
+        "ISM2G4",
+    #endif
+    FREQ_HZ_TO_REG_VAL(2400400000), FREQ_HZ_TO_REG_VAL(2479400000), 80, 2440000000}
 };
 #endif
 
@@ -162,4 +168,9 @@ void FHSSrandomiseFHSSsequenceBuild(const uint32_t seed, uint32_t freqCount, uin
 bool isDomain868()
 {
     return strcmp(FHSSconfig->domain, "EU868") == 0;
+}
+
+bool isUsingPrimaryFreqBand()
+{
+    return FHSSusePrimaryFreqBand;
 }
